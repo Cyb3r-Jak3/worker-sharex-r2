@@ -91,6 +91,7 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 	const returnUrl = new URL(request.url);
 	returnUrl.searchParams.delete('filename');
 	returnUrl.pathname = `/file/${filename}`;
+
 	const deleteUrl = new URL(request.url);
 	deleteUrl.pathname = `/delete`;
 	deleteUrl.searchParams.set("authkey", env.AUTH_KEY);
