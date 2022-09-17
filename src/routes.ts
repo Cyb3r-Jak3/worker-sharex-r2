@@ -92,13 +92,13 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 	returnUrl.searchParams.delete('filename');
 	returnUrl.pathname = `/file/${filename}`;
 	const deleteUrl = new URL(request.url);
-	deleteUrl.pathname = `/delete`
-	deleteUrl.searchParams.set("authkey", env.AUTH_KEY)
-	deleteUrl.searchParams.set("filename", filename)
+	deleteUrl.pathname = `/delete`;
+	deleteUrl.searchParams.set("authkey", env.AUTH_KEY);
+	deleteUrl.searchParams.set("filename", filename);
 	return new Response(JSON.stringify({
 		success: true,
 		image: returnUrl.href,
-		deleteUrl: deleteUrl.href
+		deleteUrl: deleteUrl.href,
 	}), {
 		headers: {
 			"content-type": "application/json",
@@ -107,10 +107,10 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 });
 
 // handle file deletion
-router.get("/delete", authMiddleware, async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
+router.get("/delete", authMiddleware, async (request: Request, env: Env): Promise<Response> => {
 	const url = new URL(request.url);
 	const filename = url.searchParams.get('filename');
-	
+
 	if(!filename){
 		return notFound('Missing filename');
 	}
