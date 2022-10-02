@@ -25,6 +25,23 @@ const authMiddleware = (request: Request, env: Env): Response | undefined => {
 	}
 };
 
+
+/**
+ *
+ * @param resp Response that hit cache
+ * @returns Response with X-Worker-Cache Header
+ */
+
+const HandleCachedResponse = (resp: Response): Response => {
+	const newHeaders = new Headers(resp.headers);
+	newHeaders.set('X-Worker-Cache', 'HIT');
+	return new Response(resp.body, {
+		status: resp.status,
+		statusText: resp.statusText,
+		headers: newHeaders,
+	});
+};
+
 const notFound = error => new Response(JSON.stringify({
 	success: false,
 	error: error ?? 'Not Found',
@@ -146,6 +163,11 @@ router.get("/delete", authMiddleware, async (request: Request, env: Env): Promis
 
 // handle file retrieval
 const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
+	const cache = caches.default;
+	let response = await cache.match(request);
+	if(response){
+		return HandleCachedResponse(response);
+	}
 	const url = new URL(request.url);
 	const id = url.pathname.slice(6);
 
@@ -154,10 +176,13 @@ const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promi
 	}
 
 	const imageReq = new Request(`https://r2host/${id}`, request);
-	return render2.fetch(imageReq, {
+
+	response = await render2.fetch(imageReq, {
 		...env,
-		CACHE_CONTROL: 'public, max-age=604800',
+		CACHE_CONTROL: 'public, max-age=2592000',
 	}, ctx);
+	ctx.waitUntil(cache.put(request, response.clone()));
+	return response;
 };
 
 router.get("/upload/:id", getFile);
