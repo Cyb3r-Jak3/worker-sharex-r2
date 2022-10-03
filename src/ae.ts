@@ -31,7 +31,7 @@ function WriteDataPoint(req: Request, AE: AnalyticsEngine, file: string, action:
 		blobs: [
 			new Date().toUTCString(),
 			req.url,
-            req.headers.get('x-real-ip'),
+			req.headers.get('x-real-ip'),
 			file,
 			action,
 			req.cf?.httpProtocol || 'invalid',
