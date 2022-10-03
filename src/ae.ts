@@ -14,6 +14,7 @@ export interface AnalyticsEngine {
 Data input format
  - Date
  - URL
+ - IP
  - File
  - Action (GET/Upload/List/Delete)
  - HTTP Protocol
@@ -30,6 +31,7 @@ function WriteDataPoint(req: Request, AE: AnalyticsEngine, file: string, action:
 		blobs: [
 			new Date().toUTCString(),
 			req.url,
+            req.headers.get('x-real-ip'),
 			file,
 			action,
 			req.cf?.httpProtocol || 'invalid',
