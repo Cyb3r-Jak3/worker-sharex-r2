@@ -1,10 +1,12 @@
 import {Router} from 'itty-router';
 import render2 from 'render2';
+import {AnalyticsEngine, LogToAE} from './ae';
 
-interface Env {
+export interface Env {
 	AUTH_KEY: string;
 	R2_BUCKET: R2Bucket;
 	CACHE_CONTROL?: string;
+	AE: AnalyticsEngine
 }
 
 const router = Router();
@@ -113,6 +115,7 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 	deleteUrl.pathname = `/delete`;
 	deleteUrl.searchParams.set("authkey", env.AUTH_KEY);
 	deleteUrl.searchParams.set("filename", filename);
+	LogToAE(filename, "UPLOAD", request, env.AE);
 	return new Response(JSON.stringify({
 		success: true,
 		image: returnUrl.href,
@@ -132,7 +135,7 @@ router.get("/delete", authMiddleware, async (request: Request, env: Env): Promis
 	if(!filename){
 		return notFound('Missing filename');
 	}
-
+	LogToAE(filename, "DELETE", request, env.AE);
 	// write to R2
 	try{
 		await env.R2_BUCKET.delete(filename);
@@ -175,6 +178,8 @@ const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promi
 		return notFound('Missing ID');
 	}
 
+	LogToAE(id, "GET", request, env.AE);
+
 	const imageReq = new Request(`https://r2host/${id}`, request);
 
 	response = await render2.fetch(imageReq, {
@@ -191,6 +196,7 @@ router.head("/file/*", getFile);
 
 router.get('/files/list', authMiddleware, async (request: Request, env: Env): Promise<Response> => {
 	const items = await env.R2_BUCKET.list({limit: 1000});
+	LogToAE("ALL", "LIST", request, env.AE);
 	return new Response(JSON.stringify(items, null, 2), {
 		headers: {
 			'content-type': 'application/json',
