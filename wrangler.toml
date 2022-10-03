@@ -15,3 +15,9 @@ command = "npm run build"
 bucket_name = "sharex-files"
 preview_bucket_name = "sharex-files"
 binding = "R2_BUCKET"
+
+
+[[unsafe.bindings]]
+type = "analytics_engine"
+name = "AE"
+dataset = "r2-sharex"
