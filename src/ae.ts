@@ -49,7 +49,10 @@ function WriteDataPoint(req: Request, AE: AnalyticsEngine, file: string, action:
 	});
 }
 
-export const LogToAE = (file: string, action: "UPLOAD"| "GET" | "LIST" | "DELETE", request: Request, AE: AnalyticsEngine) => {
+export const LogToAE = (file: string, action: "UPLOAD"| "GET" | "LIST" | "DELETE", request: Request, AE?: AnalyticsEngine) => {
+	if(!AE){
+		return;
+	}
 	try{
 		WriteDataPoint(request, AE, file, action);
 	}catch(error){

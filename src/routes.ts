@@ -6,7 +6,9 @@ export interface Env {
 	AUTH_KEY: string;
 	R2_BUCKET: R2Bucket;
 	CACHE_CONTROL?: string;
-	AE: AnalyticsEngine
+	AE?: AnalyticsEngine
+	CUSTOM_PUBLIC_BUCKET_DOMAIN?: string
+	ONLY_ALLOW_ACCESS_TO_PUBLIC_BUCKET?: boolean;
 }
 
 const router = Router();
@@ -115,11 +117,19 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 	deleteUrl.pathname = `/delete`;
 	deleteUrl.searchParams.set("authkey", env.AUTH_KEY);
 	deleteUrl.searchParams.set("filename", filename);
+
+	let bucketURL: URL;
+	if(env.CUSTOM_PUBLIC_BUCKET_DOMAIN){
+		bucketURL = new URL(request.url);
+		bucketURL.host = env.CUSTOM_PUBLIC_BUCKET_DOMAIN;
+		bucketURL.pathname = filename;
+	}
 	LogToAE(filename, "UPLOAD", request, env.AE);
 	return new Response(JSON.stringify({
 		success: true,
 		image: returnUrl.href,
 		deleteUrl: deleteUrl.href,
+		bucketUrl: bucketURL,
 	}), {
 		headers: {
 			"content-type": "application/json",
@@ -178,7 +188,6 @@ const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promi
 		return notFound('Missing ID');
 	}
 
-	LogToAE(id, "GET", request, env.AE);
 
 	const imageReq = new Request(`https://r2host/${id}`, request);
 
@@ -187,6 +196,7 @@ const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promi
 		CACHE_CONTROL: 'public, max-age=2592000',
 	}, ctx);
 	ctx.waitUntil(cache.put(request, response.clone()));
+	LogToAE(id, "GET", request, env.AE);
 	return response;
 };
 
