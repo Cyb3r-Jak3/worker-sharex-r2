@@ -1,15 +1,3 @@
-export interface AnalyticsEngineEvent {
-    readonly doubles?: number[]
-    readonly blobs?: (ArrayBuffer | string | null)[]
-}
-
-// This does not exist in Cloudflare types yet
-export interface AnalyticsEngine {
-    writeDataPoint(event: AnalyticsEngineEvent): void
-}
-
-
-
 /*
 Data input format
  - Date
@@ -26,7 +14,7 @@ Data input format
  - TLS Version
 */
 
-function WriteDataPoint(req: Request, AE: AnalyticsEngine, file: string, action: string, error = ''): void{
+function WriteDataPoint(req: Request, AE: AnalyticsEngineDataset, file: string, action: string, error = ''): void{
 	AE.writeDataPoint({
 		blobs: [
 			new Date().toUTCString(),
@@ -49,7 +37,7 @@ function WriteDataPoint(req: Request, AE: AnalyticsEngine, file: string, action:
 	});
 }
 
-export const LogToAE = (file: string, action: "UPLOAD"| "GET" | "LIST" | "DELETE", request: Request, AE?: AnalyticsEngine) => {
+export const LogToAE = (file: string, action: "UPLOAD"| "GET" | "LIST" | "DELETE", request: Request, AE?: AnalyticsEngineDataset) => {
 	if(!AE){
 		return;
 	}

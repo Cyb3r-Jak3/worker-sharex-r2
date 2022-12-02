@@ -1,12 +1,12 @@
 import {Router} from 'itty-router';
 import render2 from 'render2';
-import {AnalyticsEngine, LogToAE} from './ae';
+import {LogToAE} from './ae';
 
 export interface Env {
 	AUTH_KEY: string;
 	R2_BUCKET: R2Bucket;
 	CACHE_CONTROL?: string;
-	AE?: AnalyticsEngine
+	AE?: AnalyticsEngineDataset
 	CUSTOM_PUBLIC_BUCKET_DOMAIN?: string
 	ONLY_ALLOW_ACCESS_TO_PUBLIC_BUCKET?: boolean;
 }
@@ -29,22 +29,6 @@ const authMiddleware = (request: Request, env: Env): Response | undefined => {
 	}
 };
 
-
-/**
- *
- * @param resp Response that hit cache
- * @returns Response with X-Worker-Cache Header
- */
-
-const HandleCachedResponse = (resp: Response): Response => {
-	const newHeaders = new Headers(resp.headers);
-	newHeaders.set('X-Worker-Cache', 'HIT');
-	return new Response(resp.body, {
-		status: resp.status,
-		statusText: resp.statusText,
-		headers: newHeaders,
-	});
-};
 
 const notFound = error => new Response(JSON.stringify({
 	success: false,
@@ -146,8 +130,12 @@ router.get("/delete", authMiddleware, async (request: Request, env: Env): Promis
 		return notFound('Missing filename');
 	}
 	LogToAE(filename, "DELETE", request, env.AE);
-	// write to R2
+
+	// delete from R2
 	try{
+		const cache = caches.default;
+		await cache.delete(new Request(`https://r2host/${filename}`, request));
+
 		await env.R2_BUCKET.delete(filename);
 		return new Response(JSON.stringify({
 			success: true,
@@ -176,11 +164,6 @@ router.get("/delete", authMiddleware, async (request: Request, env: Env): Promis
 
 // handle file retrieval
 const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promise<Response> => {
-	const cache = caches.default;
-	let response = await cache.match(request);
-	if(response){
-		return HandleCachedResponse(response);
-	}
 	const url = new URL(request.url);
 	const id = url.pathname.slice(6);
 
@@ -188,16 +171,13 @@ const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promi
 		return notFound('Missing ID');
 	}
 
-
 	const imageReq = new Request(`https://r2host/${id}`, request);
 
-	response = await render2.fetch(imageReq, {
+	LogToAE(id, "GET", request, env.AE);
+	return render2.fetch(imageReq, {
 		...env,
 		CACHE_CONTROL: 'public, max-age=2592000',
 	}, ctx);
-	ctx.waitUntil(cache.put(request, response.clone()));
-	LogToAE(id, "GET", request, env.AE);
-	return response;
 };
 
 router.get("/upload/:id", getFile);
