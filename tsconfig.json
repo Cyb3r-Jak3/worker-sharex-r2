@@ -4,7 +4,7 @@
 		"module": "ES2020",
 		"moduleResolution": "node",
 		"lib": ["ES2020"],
-		"types": ["@cloudflare/workers-types"]
+		"types": ["@cloudflare/workers-types/2022-11-30"]
 	},
 	"include": ["src/**/*.ts"]
 }

@@ -133,8 +133,12 @@ router.get("/delete", authMiddleware, async (request: Request, env: Env): Promis
 
 	// delete from R2
 	try{
-		const cache = caches.default;
-		await cache.delete(new Request(`https://r2host/${filename}`, request));
+		try{
+			const cache = caches.default;
+			await cache.delete(new Request(`https://r2host/${filename}`), {ignoreMethod: true});
+		}catch(error){
+			console.error(`Got error when deleting cache: ${error}`);
+		}
 
 		await env.R2_BUCKET.delete(filename);
 		return new Response(JSON.stringify({
