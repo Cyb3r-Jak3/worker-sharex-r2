@@ -9,6 +9,7 @@ export interface Env {
 	AE?: AnalyticsEngineDataset
 	CUSTOM_PUBLIC_BUCKET_DOMAIN?: string
 	ONLY_ALLOW_ACCESS_TO_PUBLIC_BUCKET?: boolean;
+	READ_KEY?: string
 }
 
 const router = Router();
@@ -16,7 +17,10 @@ const router = Router();
 // handle authentication
 const authMiddleware = (request: Request, env: Env): Response | undefined => {
 	const url = new URL(request.url);
-	if(request.headers?.get("x-auth-key") !== env.AUTH_KEY && url.searchParams.get("authkey") !== env.AUTH_KEY){
+	const authKey = request.headers?.get("x-auth-key") || url.searchParams.get("authkey");
+	// Allow Auth_KEY for all
+	if(authKey !== env.AUTH_KEY && // Allow ReadKey for listing files
+		authKey === env.READ_KEY && !(request.method === 'GET' && url.pathname === '/files/list')){
 		return new Response(JSON.stringify({
 			success: false,
 			error: 'Missing auth',
@@ -42,6 +46,7 @@ const notFound = error => new Response(JSON.stringify({
 
 // handle upload
 router.post("/upload", authMiddleware, async (request: Request, env: Env): Promise<Response> => {
+	console.log(request.url);
 	const url = new URL(request.url);
 	let fileslug = url.searchParams.get('filename');
 	if(!fileslug){
@@ -190,6 +195,10 @@ router.head("/file/*", getFile);
 
 router.get('/files/list', authMiddleware, async (request: Request, env: Env): Promise<Response> => {
 	const items = await env.R2_BUCKET.list({limit: 1000});
+	const url = new URL(request.url);
+	for(const object of items.objects){
+		object.url = `${url.origin}/file/${object.key}`;
+	}
 	LogToAE("ALL", "LIST", request, env.AE);
 	return new Response(JSON.stringify(items, null, 2), {
 		headers: {

@@ -12,3 +12,4 @@ node_modules/
 .mf
 test
 .dev.vars
+.wrangler/**

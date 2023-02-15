@@ -6,7 +6,8 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "esbuild src/index.ts --format=esm --platform=neutral --bundle --minify --sourcemap --main-fields=browser,module,main --outfile=dist/index.mjs",
-		"dev": "npx wrangler dev",
+		"dev:remote": "npx wrangler dev",
+		"dev": "npx wrangler dev --local --persist",
 		"lint": "npm run lint:js && npm run lint:json",
 		"lint:js": "eslint \"src/**/*.{js,mjs,ts}\"",
 		"lint:js:fix": "eslint \"src/**/*.{js,mjs,ts}\" --fix",
