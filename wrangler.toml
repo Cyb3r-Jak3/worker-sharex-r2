@@ -19,3 +19,6 @@ binding = "R2_BUCKET"
 analytics_engine_datasets = [
     {binding = "AE", dataset = "r2-sharex"}
 ]
+tail_consumers = [
+  { service = "worker-ae-analytics", environment = "production" }
+]
