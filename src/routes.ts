@@ -82,7 +82,7 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 			},
 		});
 	}catch(error){
-		console.error(`Error occurred writing to R2: ${error}`)
+		console.error(`Error occurred writing to R2: ${error}`);
 		return new Response(JSON.stringify({
 			success: false,
 			message: "Error occurred writing to R2",
