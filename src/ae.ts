@@ -39,6 +39,7 @@ function WriteDataPoint(req: Request, AE: AnalyticsEngineDataset, file: string, 
 
 export const LogToAE = (file: string, action: "UPLOAD"| "GET" | "LIST" | "DELETE", request: Request, AE?: AnalyticsEngineDataset) => {
 	if(!AE){
+		console.error("No AE dataset provided");
 		return;
 	}
 	try{

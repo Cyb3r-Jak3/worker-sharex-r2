@@ -82,6 +82,7 @@ router.post("/upload", authMiddleware, async (request: Request, env: Env): Promi
 			},
 		});
 	}catch(error){
+		console.error(`Error occurred writing to R2: ${error}`)
 		return new Response(JSON.stringify({
 			success: false,
 			message: "Error occurred writing to R2",
@@ -154,6 +155,7 @@ router.get("/delete", authMiddleware, async (request: Request, env: Env): Promis
 			},
 		});
 	}catch(error){
+		console.error(`Got error when deleting from R2: ${error}`);
 		return new Response(JSON.stringify({
 			success: false,
 			message: "Error occurred deleting from R2",
