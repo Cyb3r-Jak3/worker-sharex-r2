@@ -198,7 +198,7 @@ router.head("/file/*", getFile);
 router.get('/files/list', authMiddleware, async (request: Request, env: Env): Promise<Response> => {
 	const items = await env.R2_BUCKET.list({limit: 1000});
 	const url = new URL(request.url);
-	const public_url_items = items.objects.map((object) => `${url.origin}/file/${object.key}`);
+	const public_url_items = items.objects.map((object) => { `${url.origin}/file/${object.key}`; });
 	LogToAE("ALL", "LIST", request, env.AE);
 	return new Response(JSON.stringify(public_url_items, null, 2), {
 		headers: {
