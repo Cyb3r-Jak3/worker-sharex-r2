@@ -4,6 +4,7 @@
 	"private": true,
 	"license": "MIT",
 	"main": "index.js",
+	"packageManager": "pnpm@9.0.4",
 	"scripts": {
 		"build": "esbuild src/index.ts --format=esm --platform=neutral --minify --bundle --sourcemap --main-fields=browser,module,main --outfile=dist/index.mjs",
 		"dev:remote": "npx wrangler dev",
