@@ -39,8 +39,8 @@ importers:
         specifier: 43.0.2
         version: 43.0.2(eslint@8.20.0)
       itty-router:
-        specifier: 5.0.17
-        version: 5.0.17
+        specifier: 3.0.11
+        version: 3.0.11
       render2:
         specifier: 1.4.1
         version: 1.4.1
@@ -1097,8 +1097,8 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  itty-router@5.0.17:
-    resolution: {integrity: sha512-ZHnPI0OOyTTLuNp2FdciejYaK4Wl3ZV3O0yEm8njOGggh/k/ek3BL7X2I5YsCOfc5vLhIJgj3Z4pUtLs6k9Ucg==}
+  itty-router@3.0.11:
+    resolution: {integrity: sha512-vWsoHBi2CmU15YzyUeHjRfjdySL2jqZQKA9jP1LXkBcLJAo0KQNVlQMvhtzG0mzABhVYifeBF97UkrrpuTCWYQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -2685,7 +2685,7 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  itty-router@5.0.17: {}
+  itty-router@3.0.11: {}
 
   js-tokens@4.0.0: {}
 

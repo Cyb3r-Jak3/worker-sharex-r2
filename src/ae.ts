@@ -16,6 +16,7 @@ Data input format
 
 function WriteDataPoint(req: Request, AE: AnalyticsEngineDataset, file: string, action: string, error = ''): void{
 	AE.writeDataPoint({
+		indexes: [file],
 		blobs: [
 			new Date().toUTCString(),
 			req.url,

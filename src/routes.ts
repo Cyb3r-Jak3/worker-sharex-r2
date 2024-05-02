@@ -182,7 +182,7 @@ const getFile = async (request: Request, env: Env, ctx: ExecutionContext): Promi
 		return notFound('Missing ID');
 	}
 
-	const imageReq = new Request(`https://r2host/${id}`, request);
+	const imageReq = new Request(`http://r2host/${id}`, request);
 
 	LogToAE(id, "GET", request, env.AE);
 	return render2.fetch(imageReq, {
@@ -198,11 +198,9 @@ router.head("/file/*", getFile);
 router.get('/files/list', authMiddleware, async (request: Request, env: Env): Promise<Response> => {
 	const items = await env.R2_BUCKET.list({limit: 1000});
 	const url = new URL(request.url);
-	for(const object of items.objects){
-		object.url = `${url.origin}/file/${object.key}`;
-	}
+	const public_url_items = items.objects.map((object) => `${url.origin}/file/${object.key}`);
 	LogToAE("ALL", "LIST", request, env.AE);
-	return new Response(JSON.stringify(items, null, 2), {
+	return new Response(JSON.stringify(public_url_items, null, 2), {
 		headers: {
 			'content-type': 'application/json',
 		},
