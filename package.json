@@ -7,17 +7,17 @@
 	"packageManager": "pnpm@9.0.4",
 	"scripts": {
 		"build": "esbuild src/index.ts --format=esm --platform=neutral --minify --bundle --sourcemap --main-fields=browser,module,main --outfile=dist/index.mjs",
-		"dev:remote": "npx wrangler dev",
-		"dev": "npx wrangler dev --local --persist",
-		"lint": "npm run lint:js && npm run lint:json",
+		"dev:remote": "pnpm wrangler dev",
+		"dev": "pnpm wrangler dev --local --persist",
+		"lint": "pnpm run lint:js && npm run lint:json",
 		"lint:js": "eslint \"src/**/*.{js,mjs,ts}\"",
 		"lint:js:fix": "eslint \"src/**/*.{js,mjs,ts}\" --fix",
 		"lint:json": "eslint \"**/*.json\"",
 		"publish": "wrangler deploy",
-		"test": "npm run lint"
+		"test": "pnpm run lint"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "4.20240423.0",
+		"@cloudflare/workers-types": "4.20250121.0",
 		"@nodecraft/eslint-config": "19.0.0",
 		"@typescript-eslint/eslint-plugin": "5.31.0",
 		"@typescript-eslint/parser": "5.31.0",
@@ -27,10 +27,10 @@
 		"eslint-plugin-json": "3.1.0",
 		"eslint-plugin-node": "11.1.0",
 		"eslint-plugin-unicorn": "43.0.2",
-		"itty-router": "3.0.11",
+		"itty-router": "5.0.18",
 		"render2": "1.4.1",
 		"typescript": "4.7.4",
-		"wrangler": "3.53.0"
+		"wrangler": "3.103.2"
 	},
 	"engines": {
 		"node": ">=16",

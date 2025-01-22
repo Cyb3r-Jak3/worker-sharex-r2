@@ -24,6 +24,6 @@ preview_bucket_name = "sharex-files"
 binding = "R2_BUCKET"
 
 [build]
-command = "npm run build"
+command = "pnpm run build"
 
 
