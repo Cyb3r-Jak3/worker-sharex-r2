@@ -1,6 +1,7 @@
-import {Router} from 'itty-router';
+import {Router, IRequestStrict} from 'itty-router';
 import render2 from 'render2';
 import {LogToAE} from './ae';
+
 
 export interface Env {
 	AUTH_KEY: string;
@@ -12,7 +13,8 @@ export interface Env {
 	READ_KEY?: string
 }
 
-const router = Router();
+type CF = [env: Env, ctx: ExecutionContext];
+const router = Router<IRequestStrict, CF>();
 
 // handle authentication
 const authMiddleware = (request: Request, env: Env): Response | undefined => {
