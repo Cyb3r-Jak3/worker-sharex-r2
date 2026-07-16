@@ -4,7 +4,7 @@
 		"module": "ES2020",
 		"moduleResolution": "bundler",
 		"lib": ["ES2020"],
-		"types": ["@cloudflare/workers-types/experimental", "@cloudflare/vitest-pool-workers/types"],
+		"types": ["@cloudflare/workers-types/experimental", "@cloudflare/vitest-pool-workers/types"]
 	},
 	"include": ["src/**/*.ts"]
 }

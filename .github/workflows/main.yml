@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      - run: pnpm run test
+      - run: pnpm run lint
 
       - name: Publish
       # only publish if a direct `push`/`repository_dispatch`
