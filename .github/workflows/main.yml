@@ -36,7 +36,7 @@ jobs:
 
       - name: Publish
       # only publish if a direct `push`/`repository_dispatch`
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4
         if: github.event_name == 'repository_dispatch' || startsWith(github.ref, 'refs/tags/v')
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
