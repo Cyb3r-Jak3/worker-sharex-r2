@@ -14,7 +14,7 @@ Data input format
  - TLS Version
 */
 
-function WriteDataPoint(req: Request, AE: AnalyticsEngineDataset, file: string, action: string, error = ''): void{
+function WriteDataPoint(req: Request, AE: AnalyticsEngineDataset, file: string, action: string, error?: unknown): void{
 	AE.writeDataPoint({
 		indexes: [file],
 		blobs: [
@@ -23,17 +23,17 @@ function WriteDataPoint(req: Request, AE: AnalyticsEngineDataset, file: string, 
 			req.headers.get('x-real-ip'),
 			file,
 			action,
-			req.cf?.httpProtocol || 'invalid',
-			error,
+			String(req.cf?.httpProtocol ?? 'invalid'),
+			error ? JSON.stringify(error) : "none",
 			req.headers.get('user-agent'),
 			req.headers.get('referer'),
-			req.cf?.city || "unknown city",
-			req.cf?.colo || 'missing colo',
-			req.cf?.country || 'missing country',
-			req.cf?.tlsVersion || 'invalid TLS',
+			String(req.cf?.city ?? 'missing city'),
+			String(req.cf?.colo ?? 'missing colo'),
+			String(req.cf?.country ?? 'missing country'),
+			String(req.cf?.tlsVersion ?? 'invalid TLS'),
 		],
 		doubles: [
-			req.cf?.asn || 0,
+			Number(req.cf?.asn) || 0,
 		],
 	});
 }
