@@ -5,7 +5,7 @@ on:
   repository_dispatch:
 
 env:
-  NODE_VERSION: 20.x
+  NODE_VERSION: 24.x
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,34 +13,27 @@ jobs:
     # always run in pull request, or repository_dispatch
     if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'repository_dispatch'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        name: Install pnpm
         with:
+          version: 11
           run_install: false
 
-      - name: Get pnpm store directory
-        run: |
-            echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Restore NPM cache
-        uses: actions/cache@v4
-        continue-on-error: true
+      - name: Install Node.js
+        uses: actions/setup-node@65d868f8d4d85d7d4abb7de0875cde3fcc8798f5
         with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: 24
+          cache: 'pnpm'
 
-      - run: pnpm install 
+      - name: Install dependencies
+        run: pnpm install
       - run: pnpm run test
 
       - name: Publish
       # only publish if a direct `push`/`repository_dispatch`
-        uses: cloudflare/wrangler-action@v3.13.1
+        uses: cloudflare/wrangler-action@v4
         if: github.event_name == 'repository_dispatch' || github.event_name == 'push'
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
