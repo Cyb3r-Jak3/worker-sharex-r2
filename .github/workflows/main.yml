@@ -9,8 +9,6 @@ on:
   repository_dispatch:
 
 
-env:
-  NODE_VERSION: 24.x
 jobs:
   test:
     runs-on: ubuntu-latest
