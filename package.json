@@ -24,7 +24,7 @@
 		"eslint-plugin-unicorn": "72.0.0",
 		"itty-router": "5.0.24",
 		"render2": "1.5.1",
-		"typescript": "6.0.3",
+		"typescript": "7.0.2",
 		"vitest": "4.1.10",
 		"wrangler": "4.110.0"
 	},
