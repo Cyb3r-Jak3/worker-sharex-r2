@@ -21,7 +21,7 @@
 		"@typescript-eslint/parser": "8.72.1",
 		"esbuild": "0.28.2",
 		"eslint": "10.13.0",
-		"eslint-plugin-unicorn": "72.0.0",
+		"eslint-plugin-unicorn": "79.0.0",
 		"itty-router": "5.0.24",
 		"render2": "1.5.1",
 		"typescript": "6.0.3",
